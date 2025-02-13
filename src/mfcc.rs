@@ -72,26 +72,28 @@ impl Transform {
         }
     }
 
-    pub fn nfilters(mut self, maxfilter: usize, nfilters: usize) -> Transform {
+    pub fn set_nfilters(&mut self, maxfilter: usize, nfilters: usize) {
         self.maxfilter = maxfilter;
         self.nfilters = nfilters;
 
         #[cfg(feature = "fftrust")]
-        let filters = vec![0.0; nfilters];
+        {
+            self.filters = vec![0.0; nfilters];
+        }
         #[cfg(any(feature = "fftw", feature = "fftextern"))]
-        let filters = AlignedVec::new(nfilters);
-
-        self.filters = filters;
+        {
+            self.filters = AlignedVec::new(nfilters);
+        }
 
         self.mean_coeffs = vec![0.0; maxfilter * 3];
-
-        self
     }
 
-    pub fn normlength(mut self, length: usize) -> Transform {
+    pub fn set_normlength(&mut self, length: usize) {
         self.normalization_length = length;
+    }
 
-        self
+    pub fn output_length(&self) -> usize {
+        self.maxfilter * 3
     }
 
     pub fn transform(&mut self, input: &[i16], output: &mut [f64]) {
