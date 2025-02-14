@@ -1,0 +1,7 @@
+# .cargo/config.toml
+[target.riscv64gc-unknown-linux-gnu]
+linker = "riscv64-linux-gnu-gcc"
+rustflags = [
+    "-C", "relocation-model=pic",
+    "-C", "link-arg=-fPIC"
+]
